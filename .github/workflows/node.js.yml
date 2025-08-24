@@ -194,14 +194,20 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
+    - name: Install AWS CLI
+      uses: aws-actions/setup-aws-cli@v2
+    
     - name: Set up kubectl
-      uses: azure/setup-kubectl@v3
+      uses: azure/setup-kubectl@v4
       with:
         version: latest
-    - name: Configure kubeconfig
+    - name: Upadate kubeconfig
       run: |
         mkdir -p $HOME/.kube
-        echo "${{ secrets.EKS_KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+        aws eks update-kubeconfig --region us-east-1 --name idris-powerdevops-cluster --alias powerdevops
+        kubectl config current-context
+        
+        # echo "${{ secrets.EKS_KUBECONFIG }}" | base64 -d > $HOME/.kube/config
     - name: Deploy to EKS
       run: |
         kubectl apply -f k8s-prod/sc.yaml 
