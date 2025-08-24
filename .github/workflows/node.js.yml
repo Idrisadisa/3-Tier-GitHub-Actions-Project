@@ -200,7 +200,7 @@ jobs:
         version: latest
     - name: Configure kubeconfig
       run: |
-        mkdir -p $HOME/.kube
+        mkdir -p $HOME/.kube/config
         echo "${{ secrets.EKS_KUBECONFIG }}" | base64 -d > $HOME/.kube/config
     - name: Deploy to EKS
       run: |
