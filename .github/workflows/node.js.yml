@@ -213,14 +213,28 @@ jobs:
       with:
         version: v1.30.3
 
-    - name: Configure kubeconfig (no secret needed)
+    - name: Configure kubeconfig
+      env:
+        AWS_REGION: us-east-1
+        CLUSTER_NAME: idris-powerdevops-cluster
       run: |
         set -euo pipefail
-        # ensure ~/.kube exists and config is a file (not a dir)
-        [ -d "$HOME/.kube/config" ] && rm -rf "$HOME/.kube/config"
+        export LC_ALL=C.UTF-8
+        export LANG=C.UTF-8
+        export AWS_PAGER=""   
+        rm -rf "$HOME/.kube/config"
         mkdir -p "$HOME/.kube"
-        aws eks update-kubeconfig --region "$AWS_REGION" --name "$CLUSTER_NAME" --alias powerdevops
+        aws --version
+        aws sts get-caller-identity
+
+        aws eks update-kubeconfig \
+        --region "$AWS_REGION" \
+        --name "$CLUSTER_NAME" \
+         --alias powerdevops \
+        --kubeconfig "$HOME/.kube/config"
+    
         kubectl config current-context
+
 
     - name: Ensure namespace exists
       run: kubectl create namespace "$KNS" --dry-run=client -o yaml | kubectl apply -f -
