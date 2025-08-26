@@ -246,9 +246,6 @@ jobs:
         kubectl apply -f k8s-prod/mysql.yaml
         kubectl apply -f k8s-prod/backend.yaml
         kubectl apply -f k8s-prod/frontend.yaml
-        # Remove this if the file doesn't exist:
-        # kubectl apply -f k8s-prod/ci.yaml
+        kubectl apply -f k8s-prod/ci.yaml
         kubectl apply -f k8s-prod/ingress.yaml
-
-        kubectl -n "$KNS" get pods -o wide
-        kubectl -n "$KNS" get svc
+       
